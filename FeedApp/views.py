@@ -17,9 +17,25 @@ def index(request):
     return render(request, 'FeedApp/index.html')
 
 
+#decorator - prevents unauthorized access to pages
+@login_required
+def profile(request):
+    #user from the profile model
+    #use filter because get doesnt work with .exists
+    profile = Profile.objects.filter(user=request.user)
+    if not profile.exists():
+        Profile.objects.create(user=request.user)
+    profile = Profile.objects.get(user=request.user)
 
-#@login_required
-
+    if request.method != 'POST':
+        form = ProfileForm(instance=profile)
+    else:
+        form = ProfileForm(instance=profile,data=request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('FeedApp:profile')
+    context = {'form': form}
+    return render(request, 'FeedApp/profile.html', context)
 
 
 
