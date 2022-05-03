@@ -10,7 +10,9 @@ class Profile(models.Model):
     email = models.EmailField(max_length=300,blank=True)
     dob = models.DateField(null=True, blank=True)
     bio = models.TextField(blank=True)
+    #one to one field with the user entity. Associating each profile to a User.
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    #Many to many field with user entity. A profile can have many friends
     friends = models.ManyToManyField(User,blank=True, related_name='friends')
     created = models.DateTimeField(auto_now=True)
     updated = models.DateTimeField(auto_now_add=True)
@@ -24,6 +26,7 @@ STATUS_CHOICES = (
     ('accepted','accepted')
 )
 
+#Allows us to establish a relationship between 2 profiles. Sender and a receiver. 
 class Relationship(models.Model):
     sender = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='sender')
     receiver = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='receiver')
